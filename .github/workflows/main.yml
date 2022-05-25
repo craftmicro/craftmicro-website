@@ -3,19 +3,20 @@ name: Deploy website on push to main
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push but only for the main branch
-  push:
+  pull_request:
+    types: [ closed ]
     branches: [ main ]
     
 jobs:
   web-deploy:
     name: Deploy
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
     - name: Get latest code
       uses: actions/checkout@v2
     
-    - name: Sync files
+    - name: Sync files over FTP
       uses: SamKirkland/FTP-Deploy-Action@4.3.0
       with:
         server: ${{ secrets.ftp_server }}
